@@ -96,19 +96,19 @@ void bcnSetupAdvBeaconing(void)
   /* This function sets up a custom advertisement package according to iBeacon specifications.
    * The advertisement package is 30 bytes long. See the iBeacon specification for further details.
    */
-#define EDDYSTONE_DATA_LEN           (21)
+#define EDDYSTONE_DATA_LEN           (25)
 
 static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
   0x03,          // Length of service list
   0x03,          // Service list
   0xAA, 0xFE,    // Eddystone ID
-  0x10,          // Length of service data
+  0x14,          // Length of service data
   0x16,          // Service data
   0xAA,  0xFE,   // Eddystone ID
   0x10,          // Frame type Eddystone-URL
   0x00,          // Tx power
-  0x01,          // http://www., 0x01=https://www.
-  's','i','l','a','b','s','.','c','o','m'
+  0x03,          // http://www., 0x01=https://www.
+  'b','i','t','.','l','y','/','2','X','I','J','h','G','T'
 };
 //  static struct {
 //    uint8_t flagsLen;     /* Length of the Flags field. */
