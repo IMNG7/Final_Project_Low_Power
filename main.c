@@ -96,66 +96,77 @@ void bcnSetupAdvBeaconing(void)
   /* This function sets up a custom advertisement package according to iBeacon specifications.
    * The advertisement package is 30 bytes long. See the iBeacon specification for further details.
    */
+#define EDDYSTONE_DATA_LEN           (21)
 
-  static struct {
-    uint8_t flagsLen;     /* Length of the Flags field. */
-    uint8_t flagsType;    /* Type of the Flags field. */
-    uint8_t flags;        /* Flags field. */
-    uint8_t mandataLen;   /* Length of the Manufacturer Data field. */
-    uint8_t mandataType;  /* Type of the Manufacturer Data field. */
-    uint8_t compId[2];    /* Company ID field. */
-    uint8_t beacType[2];  /* Beacon Type field. */
-    uint8_t uuid[16];     /* 128-bit Universally Unique Identifier (UUID). The UUID is an identifier for the company using the beacon*/
-    uint8_t majNum[2];    /* Beacon major number. Used to group related beacons. */
-    uint8_t minNum[2];    /* Beacon minor number. Used to specify individual beacons within a group.*/
-    uint8_t txPower;      /* The Beacon's measured RSSI at 1 meter distance in dBm. See the iBeacon specification for measurement guidelines. */
-  }
-  bcnBeaconAdvData
-    = {
-    /* Flag bits - See Bluetooth 4.0 Core Specification , Volume 3, Appendix C, 18.1 for more details on flags. */
-    2,  /* length  */
-    0x01, /* type */
-    0x04 | 0x02, /* Flags: LE General Discoverable Mode, BR/EDR is disabled. */
-
-    /* Manufacturer specific data */
-    26,  /* length of field*/
-    0xFF, /* type of field */
-
-    /* The first two data octets shall contain a company identifier code from
-     * the Assigned Numbers - Company Identifiers document */
-    /* 0x004C = Apple */
-    { UINT16_TO_BYTES(0x004C) },
-
-    /* Beacon type */
-    /* 0x0215 is iBeacon */
-    { UINT16_TO_BYTE1(0x0215), UINT16_TO_BYTE0(0x0215) },
-
-    /* 128 bit / 16 byte UUID */
-    { 0xE2, 0xC5, 0x6D, 0xB5, 0xDF, 0xFB, 0x48, 0xD2, \
-      0xB0, 0x60, 0xD0, 0xF5, 0xA7, 0x10, 0x96, 0xE0 },
-
-    /* Beacon major number */
-    /* Set to 34987 and converted to correct format */
-    { UINT16_TO_BYTE1(34987), UINT16_TO_BYTE0(34987) },
-
-    /* Beacon minor number */
-    /* Set as 1025 and converted to correct format */
-    { UINT16_TO_BYTE1(1025), UINT16_TO_BYTE0(1025) },
-
-    /* The Beacon's measured RSSI at 1 meter distance in dBm */
-    /* 0xD7 is -41dBm */
-    0xD7
-    };
+static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
+  0x03,          // Length of service list
+  0x03,          // Service list
+  0xAA, 0xFE,    // Eddystone ID
+  0x10,          // Length of service data
+  0x16,          // Service data
+  0xAA,  0xFE,   // Eddystone ID
+  0x10,          // Frame type Eddystone-URL
+  0x00,          // Tx power
+  0x01,          // http://www., 0x01=https://www.
+  's','i','l','a','b','s','.','c','o','m'
+};
+//  static struct {
+//    uint8_t flagsLen;     /* Length of the Flags field. */
+//    uint8_t flagsType;    /* Type of the Flags field. */
+//    uint8_t flags;        /* Flags field. */
+//    uint8_t mandataLen;   /* Length of the Manufacturer Data field. */
+//    uint8_t mandataType;  /* Type of the Manufacturer Data field. */
+//    uint8_t compId[2];    /* Company ID field. */
+//    uint8_t beacType[2];  /* Beacon Type field. */
+//    uint8_t uuid[16];     /* 128-bit Universally Unique Identifier (UUID). The UUID is an identifier for the company using the beacon*/
+//    uint8_t majNum[2];    /* Beacon major number. Used to group related beacons. */
+//    uint8_t minNum[2];    /* Beacon minor number. Used to specify individual beacons within a group.*/
+//    uint8_t txPower;      /* The Beacon's measured RSSI at 1 meter distance in dBm. See the iBeacon specification for measurement guidelines. */
+//  }
+//  bcnBeaconAdvData
+//    = {
+//    /* Flag bits - See Bluetooth 4.0 Core Specification , Volume 3, Appendix C, 18.1 for more details on flags. */
+//    2,  /* length  */
+//    0x01, /* type */
+//    0x04 | 0x02, /* Flags: LE General Discoverable Mode, BR/EDR is disabled. */
+//
+//    /* Manufacturer specific data */
+//    26,  /* length of field*/
+//    0xFF, /* type of field */
+//
+//    /* The first two data octets shall contain a company identifier code from
+//     * the Assigned Numbers - Company Identifiers document */
+//    /* 0x004C = Apple */
+//    { UINT16_TO_BYTES(0x004C) },
+//
+//    /* Beacon type */
+//    /* 0x0215 is iBeacon */
+//    { UINT16_TO_BYTE1(0x0215), UINT16_TO_BYTE0(0x0215) },
+//
+//    /* 128 bit / 16 byte UUID */
+//    { 0xE2, 0xC5, 0x6D, 0xB5, 0xDF, 0xFB, 0x48, 0xD2, \
+//      0xB0, 0x60, 0xD0, 0xF5, 0xA7, 0x10, 0x96, 0xE0 },
+//
+//    /* Beacon major number */
+//    /* Set to 34987 and converted to correct format */
+//    { UINT16_TO_BYTE1(34987), UINT16_TO_BYTE0(34987) },
+//
+//    /* Beacon minor number */
+//    /* Set as 1025 and converted to correct format */
+//    { UINT16_TO_BYTE1(1025), UINT16_TO_BYTE0(1025) },
+//
+//    /* The Beacon's measured RSSI at 1 meter distance in dBm */
+//    /* 0xD7 is -41dBm */
+//    0xD7
+//    };
 
   //
-  uint8_t len = sizeof(bcnBeaconAdvData);
-  uint8_t *pData = (uint8_t*)(&bcnBeaconAdvData);
 
   /* Set 0 dBm Transmit Power */
   gecko_cmd_system_set_tx_power(0);
 
   /* Set custom advertising data */
-  gecko_cmd_le_gap_bt5_set_adv_data(0, 0, len, pData);
+  gecko_cmd_le_gap_bt5_set_adv_data(0, 0, EDDYSTONE_DATA_LEN, eddystone_data);
 
   /* Set advertising parameters. 100ms advertisement interval.
    * The first two parameters are minimum and maximum advertising interval,
@@ -195,7 +206,9 @@ int main(void)
         // Initialize iBeacon ADV data
         bcnSetupAdvBeaconing();
         break;
+      case gecko_evt_le_connection_opened_id:
 
+    	break;
       default:
         break;
     }
