@@ -9,3 +9,19 @@ Beacon Mode: This mode will be started when the authentication will be completed
 Security Mode: This mode will be started when the authentication will be completed for the second time, this means the system will be closed.  In security mode, the blue gecko will be sleeping, the motion sensor will start and if any motion is detected then a LED will glow indicating intruder’s presence.
 
 Link for the Individual Report: https://drive.google.com/drive/u/1/folders/1W3Kh64A_Q4Nl3I2ewa-m0OtcLxVkeYUI
+
+# Project Status
+
+## Completed
+
+1. Indoor Navigation Completed
+
+2. Proximity Sensor Interfaced with Blue Gecko.
+
+## Remaining
+
+1. Integrate the proximity and beacon system.
+
+2. Test subsystem 2.
+
+3. Integrate with subsystem 1. 
