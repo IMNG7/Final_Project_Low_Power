@@ -33,6 +33,7 @@
 
 #include "em_se.h"
 #include "em_assert.h"
+#include "em_system.h"
 
 /***************************************************************************//**
  * @addtogroup emlib
@@ -916,6 +917,24 @@ SE_Response_t SE_initOTP(SE_OTPInit_t *otp_init)
     mcuSettingsFlags |= SE_OTP_MCU_SETTINGS_FLAG_SECURE_BOOT_VERIFY_CERTIFICATE;
   }
   if (otp_init->enableAntiRollback) {
+    // Verify firmware compatibility before enabling anti-rollback
+#if defined(_SILICON_LABS_32B_SERIES_2_CONFIG_1)
+    uint16_t part_number = SYSTEM_GetPartNumber();
+    if (part_number == 1010 || part_number == 1020) {
+      if (SYSTEM_GetProdRev() < 16) {
+        SE_Status_t status;
+        res = SE_getStatus(&status);
+        if ((res != SE_RESPONSE_OK) || (status.seFwVersion < 0x00010201)) {
+          // If the following error is returned, the SE firmware version
+          // needs to be upgraded to v1.2.1 or higher before enabling
+          // anti-rollback.
+          EFM_ASSERT(false);
+          return SE_RESPONSE_ABORT;
+        }
+      }
+    }
+#endif
+
     mcuSettingsFlags |= SE_OTP_MCU_SETTINGS_FLAG_SECURE_BOOT_ANTI_ROLLBACK;
   }
 

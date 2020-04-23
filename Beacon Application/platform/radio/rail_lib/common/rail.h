@@ -1571,7 +1571,9 @@ uint16_t RAIL_GetTxFifoSpaceAvailable(RAIL_Handle_t railHandle);
  *
  * This function fails if unsupported transitions are passed in or if the
  * radio is currently in the RX state. Success can transition to TX, RX, or
- * IDLE, while error can transition to RX or IDLE.
+ * IDLE, while error can transition to RX or IDLE. The timings of state
+ * transitions from the RX state are not guaranteed when packets are longer
+ * than 16 seconds on-air.
  */
 RAIL_Status_t RAIL_SetRxTransitions(RAIL_Handle_t railHandle,
                                     const RAIL_StateTransitions_t *transitions);
@@ -1583,7 +1585,8 @@ RAIL_Status_t RAIL_SetRxTransitions(RAIL_Handle_t railHandle,
  * @param[out] transitions The state transitions that apply after receive.
  * @return Status code indicating a success of the function call.
  *
- * Retrieves the current state transitions after RX and stores them in the transitions argument.
+ * Retrieves the current state transitions after RX and stores them in the
+ * transitions argument.
  */
 RAIL_Status_t RAIL_GetRxTransitions(RAIL_Handle_t railHandle,
                                     RAIL_StateTransitions_t *transitions);
