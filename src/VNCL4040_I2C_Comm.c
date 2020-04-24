@@ -33,31 +33,31 @@ void i2c_initialize()
 	uint8_t t1[1];
 	I2CSPM_Init(&i2c_init_def);
 	us_wait(80000);
-	tmp[0]=0x04;
-	tmp[1]=0x10;
-	tmp[2]=0x00;
+	t1[0]=0x04;
+	tmp[0]=0x1D;
+	tmp[1]=0x47;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
-	tmp[0]=0x03;
-	tmp[1]=0x00;
-	tmp[2]=0x01;
+	t1[0]=0x03;
+	tmp[0]=0xCE;
+	tmp[1]=0x0B;
+//	i2c_transfer_cmd_reg_write(t1,tmp);
+//	us_wait(10000);
+//	tmp[0]=0x00;
+//	tmp[1]=0x00;
+//	tmp[2]=0x00;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
-	tmp[0]=0x00;
-	tmp[1]=0x00;
-	tmp[2]=0x00;
+	t1[0]=0x06;
+	tmp[0]=0x4E;
+	tmp[1]=0x20;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
-	tmp[0]=0x06;
-	tmp[1]=0xFF;
-	tmp[2]=0x3F;
-	i2c_transfer_cmd_reg_write(t1,tmp);
-	us_wait(10000);
-	tmp[0]=0x07;
-	tmp[1]=0x00;
-	tmp[2]=0x00;
-	i2c_transfer_cmd_reg_write(t1,tmp);
-	us_wait(10000);
+//	t1[0]=0x07;
+//	tmp[0]=0x00;
+//	tmp[1]=0x00;
+//	i2c_transfer_cmd_reg_write(t1,tmp);
+//	us_wait(10000);
 }
 /*
  * @Name: i2c_transfer_write()
@@ -83,11 +83,11 @@ void i2c_transfer_write(uint8_t* message)
 
 void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data)
 {	i2c_transfer_message.addr=VNCL4040_I2C_BUS_ADDRESS<<1;
-	i2c_transfer_message.flags=I2C_FLAG_WRITE;
-	i2c_transfer_message.buf[0].data=data;
-	i2c_transfer_message.buf[0].len=3;
-//	i2c_transfer_message.buf[1].data=data;
-//	i2c_transfer_message.buf[1].len=Double_Byte;
+	i2c_transfer_message.flags=I2C_FLAG_WRITE_WRITE;
+	i2c_transfer_message.buf[0].data=cmd_reg;
+	i2c_transfer_message.buf[0].len=Single_Byte;
+	i2c_transfer_message.buf[1].data=data;
+	i2c_transfer_message.buf[1].len=Double_Byte;
 	return_state=I2CSPM_Transfer(I2C0,&i2c_transfer_message);
 	if(return_state!=0)
 	{
@@ -100,7 +100,7 @@ void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data)
 }
 void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data)
 {	i2c_transfer_message.addr=VNCL4040_I2C_BUS_ADDRESS<<1;
-	i2c_transfer_message.flags=I2C_FLAG_WRITE;
+	i2c_transfer_message.flags=I2C_FLAG_WRITE_READ;
 	i2c_transfer_message.buf[0].data=cmd_reg;
 	i2c_transfer_message.buf[0].len=Single_Byte;
 	i2c_transfer_message.buf[1].data=data;
@@ -152,11 +152,11 @@ void measure_temp()
 	i2c_initialize();
 	us_wait(10000);
 	t1[0]=0x08;
-	i2c_transfer_write(t1);
-	us_wait(10000);
+	//i2c_transfer_write(t1);
+	//us_wait(10000);
 //	tmp[0]=0x00;
 //	tmp[1]=0x00;
-	i2c_transfer_read(tmp);
+	i2c_transfer_cmd_reg_read(t1,tmp);
 	us_wait(10000);
 	temp=(tmp[0]<<8)+tmp[1];			// there are 2 buffers for Higher and Lower byte.
 	LOG_INFO("\n\r Value:%d",temp);

@@ -15,8 +15,8 @@
 #define Push_Button_Pin0 6
 #define Push_Button_Port1 5
 #define Push_Button_Pin1 7
-#define Interrupt_port 2
-#define Interrupt_pin 9
+#define Interrupt_port 0
+#define Interrupt_pin 2
 void gpioInit();
 void gpioLed0SetOn();
 void gpioLed0SetOff();

@@ -168,7 +168,7 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,8,true,false,true);
+    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,true,true);
     GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
@@ -236,5 +236,6 @@ void Proximity_Handler()
 {
 	gecko_external_signal(gecko_evt_system_external_signal_id);
 	Proximity_flag=1;
+	LOG_INFO("\n\rInside Interrupt");
 	GPIO_IntClear(0x40);
 }

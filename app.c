@@ -81,12 +81,24 @@ static void client_server_request(uint16_t model_id,
 	//if the value by the switch on publisher pressed gives 0
 	if(!(req->on_off))
 	{
-		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON PRESSED");
+		displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON PRESSED");
+		gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
+		gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
+		if(Proximity_flag == 0)
+		{
+			LETIMER_Enable(LETIMER0,true);
+			NVIC_EnableIRQ(LETIMER0_IRQn);
+		}
+
 	}
 	//if the value by the switch on publisher not pressed gives 1
 	else
 	{
 		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON RELEASED");
+		  LETIMER_Enable(LETIMER0,false);
+		  NVIC_DisableIRQ(LETIMER0_IRQn);
+		  GPIO_IntEnable(0<<Interrupt_pin);
+		  bcnSetupAdvBeaconing();
 	}
 }
 void gecko_bgapi_classes_init_server_friend(void)
@@ -424,6 +436,8 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
     	{
 			LETIMER_Enable(LETIMER0,false);
 			NVIC_DisableIRQ(LETIMER0_IRQn);
+			GPIO_IntEnable(0<<Interrupt_pin);
+			bcnSetupAdvBeaconing();
     		Gpio_flag =0;
 			LOG_DEBUG("SEND ON OFF REQUEST");
 			LOG_INFO("\n\rPB0 Pressed");
@@ -442,7 +456,6 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		    else
 		    {
 		    	 LOG_INFO("request sent, trid = %u, delay = %d\r\n", trid, delay);
-		    	 bcnSetupAdvBeaconing();
 		    }
     	}
     	if(Gpio_flag == 2)
@@ -456,6 +469,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			{
 				LETIMER_Enable(LETIMER0,true);
 				NVIC_EnableIRQ(LETIMER0_IRQn);
+				GPIO_IntEnable(1<<Interrupt_pin);
 			}
 		}
     	if(Proximity_flag == 1)
@@ -464,13 +478,16 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("\n\rPB1 Pressed");
 			//gecko_cmd_le_connection_close(conn_handle);
 			LETIMER_Enable(LETIMER0,false);
+			GPIO_IntEnable(0<<Interrupt_pin);
 		}
     	if(Proximity_flag == 3)
 		{
-			Gpio_flag =0;
+			Proximity_flag =0;
 			LOG_INFO("\n\rPB1 Pressed");
 			//gecko_cmd_le_connection_close(conn_handle);
 			LETIMER_Enable(LETIMER0,true);
+			NVIC_EnableIRQ(LETIMER0_IRQn);
+			GPIO_IntEnable(1<<Interrupt_pin);
 		}
 //		     if (request_count > 0)
 //		     {
