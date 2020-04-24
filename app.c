@@ -47,12 +47,12 @@
 
 static uint8_t boot_to_dfu = 0;
 //extern uint8_t flag;
-extern uint8_t Proximity_flag;
+volatile uint8_t Proximity_flag=0;
 int conn_handle;
 uint8_t button_state=0x00;
 volatile uint8_t buffer_button[1]={0};
 volatile uint8_t Button_event=0;
-extern volatile uint8_t Gpio_flag;
+volatile uint8_t Gpio_flag=0;
 static uint16_t _elem_index=0xffff;
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -97,7 +97,8 @@ static void client_server_request(uint16_t model_id,
 		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON RELEASED");
 		  LETIMER_Enable(LETIMER0,false);
 		  NVIC_DisableIRQ(LETIMER0_IRQn);
-		  GPIO_IntEnable(0<<Interrupt_pin);
+		  //GPIO_IntEnable(0<<Interrupt_pin);
+		  GPIO_IntDisable(1<<Interrupt_pin);
 		  bcnSetupAdvBeaconing();
 	}
 }
@@ -434,9 +435,10 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
     	if(Gpio_flag == 1)
     	{
+    		Gpio_flag =0;
 			LETIMER_Enable(LETIMER0,false);
 			NVIC_DisableIRQ(LETIMER0_IRQn);
-			GPIO_IntEnable(0<<Interrupt_pin);
+			//GPIO_IntEnable(0<<Interrupt_pin);
 			bcnSetupAdvBeaconing();
     		Gpio_flag =0;
 			LOG_DEBUG("SEND ON OFF REQUEST");
@@ -478,7 +480,8 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("\n\rPB1 Pressed");
 			//gecko_cmd_le_connection_close(conn_handle);
 			LETIMER_Enable(LETIMER0,false);
-			GPIO_IntEnable(0<<Interrupt_pin);
+			GPIO_IntDisable(1<<Interrupt_pin);
+			//GPIO_IntEnable(1<<Interrupt_pin);
 		}
     	if(Proximity_flag == 3)
 		{

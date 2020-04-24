@@ -118,8 +118,8 @@ const gecko_configuration_t config =
 };
 
 uint8_t flag=0;
-uint8_t Gpio_flag=0;
-uint8_t Proximity_flag=0;
+extern uint8_t Gpio_flag;
+extern uint8_t Proximity_flag;
 /*******************************************************************************************************
  * Main function.
  * Instructions to proceed for the mesh assignment.
@@ -168,11 +168,12 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,true,true);
+    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,false,true);
     GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
-    GPIO_IntEnable(1<<Interrupt_pin);
+    //GPIO_IntEnable(1<<Interrupt_pin);
+    GPIO_IntDisable(1<<Interrupt_pin);
     NVIC_EnableIRQ(LETIMER0_IRQn);
   // Initialize the bgapi classes
   if( DeviceUsesClientModel() ){
@@ -203,19 +204,6 @@ int main(void)
 	  	  }
   }
 }
-//void GPIO_EVEN_IRQHandler()
-//{
-//	gecko_external_signal(gecko_evt_system_external_signal_id);
-//	if(Gpio_flag == 0 )
-//	{
-//		Gpio_flag =1;
-//	}
-//	else if(Gpio_flag == 1)
-//	{
-//		Gpio_flag =0;
-//	}
-//	GPIO_IntClear(0x40);
-//}
 void PB0Handler()
 {
 	gecko_external_signal(gecko_evt_system_external_signal_id);

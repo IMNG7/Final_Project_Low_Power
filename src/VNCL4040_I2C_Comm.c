@@ -48,11 +48,17 @@ void i2c_initialize()
 //	tmp[2]=0x00;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
-	t1[0]=0x06;
-	tmp[0]=0x4E;
-	tmp[1]=0x20;
+	t1[0]=0x07;
+	tmp[0]=0x20;
+	tmp[1]=0x4E;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
+	t1[0]=0x06;
+	tmp[0]=0x96;
+	tmp[1]=0x00;
+	i2c_transfer_cmd_reg_write(t1,tmp);
+	us_wait(10000);
+
 //	t1[0]=0x07;
 //	tmp[0]=0x00;
 //	tmp[1]=0x00;
