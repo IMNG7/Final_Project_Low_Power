@@ -220,7 +220,7 @@ static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
   0x10,          // Frame type Eddystone-URL
   0x00,          // Tx power
   0x03,          // http://www., 0x01=https://www.
-  'b','i','t','.','l','y','/','n','g','0','0','0','8'
+  'b','i','t','.','l','y','/','n','g','0','0','0','1'
 };
 
   /* Set 0 dBm Transmit Power */
