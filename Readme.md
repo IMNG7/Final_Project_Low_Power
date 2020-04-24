@@ -25,3 +25,10 @@ Link for the Individual Report: https://drive.google.com/drive/u/1/folders/1W3Kh
 2. Test subsystem 2.
 
 3. Integrate with subsystem 1. 
+
+# How to use Indoor Navigation
+
+1. Download the Locate app on android or ios.
+2. Open the Locate App and look for the ibeacon you want to reach to.
+3. Select the ibeacon. It will show the distance between ibeacon and mobile.
+4. Move towards to reach your destination.
