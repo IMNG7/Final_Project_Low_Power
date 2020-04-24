@@ -249,8 +249,28 @@ static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
 
   /* Start advertising in user mode and enable connections */
   gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
-}
 
+  displayPrintf(DISPLAY_ROW_TEMPVALUE,"BEACON MODE ");
+}
+void Beacon_Stop()
+{
+	gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
+	gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
+}
+void Proximity_Setup()
+{
+	LETIMER_Enable(LETIMER0,true);
+	NVIC_EnableIRQ(LETIMER0_IRQn);
+	GPIO_IntEnable(1<<Interrupt_pin);
+	displayPrintf(DISPLAY_ROW_TEMPVALUE,"SECURITY MODE ");
+}
+void Proximity_Stop()
+{
+	LETIMER_Enable(LETIMER0,false);
+	NVIC_DisableIRQ(LETIMER0_IRQn);
+	GPIO_IntDisable(1<<Interrupt_pin);
+	bcnSetupAdvBeaconing();
+}
 void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 {
 	uint16_t result;
@@ -436,9 +456,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
     	if(Gpio_flag == 1)
     	{
     		Gpio_flag =0;
-			LETIMER_Enable(LETIMER0,false);
-			NVIC_DisableIRQ(LETIMER0_IRQn);
-			//GPIO_IntEnable(0<<Interrupt_pin);
+			Proximity_Stop();
 			bcnSetupAdvBeaconing();
     		Gpio_flag =0;
 			LOG_DEBUG("SEND ON OFF REQUEST");
@@ -464,38 +482,25 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		{
 			Gpio_flag =0;
 			LOG_INFO("\n\rPB1 Pressed");
-			//gecko_cmd_le_connection_close(conn_handle);
-			gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
-			gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
+			Beacon_Stop();
 			if(Proximity_flag == 0)
 			{
-				LETIMER_Enable(LETIMER0,true);
-				NVIC_EnableIRQ(LETIMER0_IRQn);
-				GPIO_IntEnable(1<<Interrupt_pin);
+				Proximity_Setup();
 			}
 		}
     	if(Proximity_flag == 1)
 		{
     		Proximity_flag =2;
-			LOG_INFO("\n\rPB1 Pressed");
-			//gecko_cmd_le_connection_close(conn_handle);
-			LETIMER_Enable(LETIMER0,false);
-			GPIO_IntDisable(1<<Interrupt_pin);
-			//GPIO_IntEnable(1<<Interrupt_pin);
+			LOG_INFO("\n\rAlarm Detected, Please clear It using PB1");
+			displayPrintf(DISPLAY_ROW_TEMPVALUE,"ALARM DETECTED");
+			Proximity_Stop();
 		}
     	if(Proximity_flag == 3)
 		{
 			Proximity_flag =0;
 			LOG_INFO("\n\rPB1 Pressed");
-			//gecko_cmd_le_connection_close(conn_handle);
-			LETIMER_Enable(LETIMER0,true);
-			NVIC_EnableIRQ(LETIMER0_IRQn);
-			GPIO_IntEnable(1<<Interrupt_pin);
+			Proximity_Setup();
 		}
-//		     if (request_count > 0)
-//		     {
-//		    	 request_count--;
-//		     }
 		break;
   }
 }

@@ -102,4 +102,16 @@
       <properties write="true" write_requirement="optional"/>
     </characteristic>
   </service>
+  
+  <!--Immediate Alert-->
+  <service advertise="false" id="immediate_alert" name="Immediate Alert" requirement="optional" sourceId="org.bluetooth.service.immediate_alert" type="primary" uuid="1802">
+    <informativeText>Abstract:  This service exposes a control point to allow a peer device to cause the device to immediately alert.  Summary:  The Immediate Alert service is instantiated as a Primary Service.     There is only one instance of the Immediate Alert service on a device.     There is only one instance of the Alert Level characteristic in an Immediate Alert service.     This alert continues until one of following conditions occurs:     - An implementation specific timeout     - User interaction on this device     - A new alert level is written     - The physical link is disconnected  Examples:  If the written alert level is "No Alert", no alerting is done on this device.  If the written alert level is "Mild Alert", the device alerts.  If the written alert level is "High Alert", the device alerts in the strongest possible way.  </informativeText>
+    
+    <!--Alert Level-->
+    <characteristic id="alert_level" name="Alert Level" sourceId="org.bluetooth.characteristic.alert_level" uuid="2A06">
+      <informativeText>Abstract:  The level of an alert a device is to sound. If this level is changed while the alert is being sounded, the new level should take effect.  Summary:  The value of the characteristic shall be an unsigned 8 bit integer that has a fixed point exponent of 0.     The Alert Level characteristic defines the level of alert, and is one of the following three values:     - Value 0, meaning "No Alert"     - Value 1, meaning "Mild Alert"     - Value 2, meaning "High Alert"  Examples:  The value 0x01 is interpreted as "Mild Alert"  </informativeText>
+      <value length="1" type="hex" variable_length="false"/>
+      <properties indicate="false" indicate_requirement="excluded" notify="false" notify_requirement="excluded" read="false" read_requirement="excluded" reliable_write="false" reliable_write_requirement="excluded" write="false" write_no_response="true" write_no_response_requirement="mandatory" write_requirement="excluded"/>
+    </characteristic>
+  </service>
 </gatt>

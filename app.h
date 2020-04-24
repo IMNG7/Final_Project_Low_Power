@@ -55,6 +55,11 @@ void gecko_bgapi_classes_init_client_lpn(void);
  ******************************************************************************/
 void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
 
+void bcnSetupAdvBeaconing(void);
+void Beacon_Stop();
+void Proximity_Setup();
+void Proximity_Stop();
+
 /** @} (end addtogroup app) */
 /** @} (end addtogroup Application) */
 

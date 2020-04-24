@@ -21,7 +21,7 @@
  /*
    * ENTER YOUR TIME VARIABLES HERE, For the time between each I2C Read
    */
-#define Time_Period 1500
+#define Time_Period 3000
 /*
    * DON'T CHANGE BELOW THIS
    */

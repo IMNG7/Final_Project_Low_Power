@@ -98,6 +98,7 @@ const gecko_configuration_t config =
   .bluetooth.max_advertisers = MAX_ADVERTISERS,
   .bluetooth.heap = bluetooth_stack_heap,
   .bluetooth.heap_size = sizeof(bluetooth_stack_heap) - BTMESH_HEAP_SIZE,
+  .sleep.flags = SLEEP_FLAGS_DEEP_SLEEP_ENABLE,
 #if defined(FEATURE_LFXO)
   .bluetooth.sleep_clock_accuracy = 100, // ppm
 #elif defined(PLFRCO_PRESENT) || defined(LFRCO_PRESENT)
@@ -168,7 +169,7 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,false,true);
+    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
     GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
