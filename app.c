@@ -476,6 +476,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("\n\rPB1 Pressed");
 			Beacon_Stop();
 			Proximity_Setup();
+			gpioLed0SetOff();
 		}
     	if(Proximity_flag == 1)
 		{
@@ -483,12 +484,14 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("\n\rAlarm Detected, Please clear It using PB1");
 			displayPrintf(DISPLAY_ROW_TEMPVALUE,"ALARM DETECTED");
 			Proximity_Stop();
+			gpioLed0SetOn();
 		}
     	if(Proximity_flag == 3)
 		{
 			Proximity_flag =0;
 			LOG_INFO("\n\rPB1 Pressed");
 			Proximity_Setup();
+			gpioLed0SetOff();
 		}
 		break;
   }
