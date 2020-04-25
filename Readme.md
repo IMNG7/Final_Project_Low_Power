@@ -27,8 +27,8 @@ Link for the Individual Report: https://drive.google.com/drive/u/1/folders/1W3Kh
 3. Integrate with subsystem 1. 
 
 # How to use Indoor Navigation
-
-1. Download the Locate app on android or ios.
-2. Open the Locate App and look for the ibeacon you want to reach to.
-3. Select the ibeacon. It will show the distance between ibeacon and mobile.
-4. Move towards to reach your destination.
+1. Use https://www.colorado.edu/map/?id=336#!m/193854 for CU Boulder Map 
+2. Download the Locate app on android or ios.
+3. Open the Locate App and look for the ibeacon you want to reach to.
+4. Select the ibeacon. It will show the distance between ibeacon and mobile.
+5. Move towards to reach your destination.
