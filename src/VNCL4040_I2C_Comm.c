@@ -99,7 +99,7 @@ void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data)
  * @Arguments: None
  * @returns: Temperature Value
  */
-void measure_temp()
+void measure_Prox()
 {
 	uint8_t tmp[2];
 	uint16_t temp;
@@ -113,7 +113,7 @@ void measure_temp()
 	us_wait(10000);
 	temp=(tmp[1]<<8)+tmp[0];			// there are 2 buffers for Higher and Lower byte.
 	LOG_INFO("\n\r Value:%d",temp);
-	if(temp>1000)
+	if(temp>200)
 	{
 		gecko_external_signal(gecko_evt_system_external_signal_id);
 		Proximity_flag =1;

@@ -169,7 +169,7 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,true,true);
+    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
     GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
@@ -191,7 +191,7 @@ int main(void)
 	  //IRQ_State=CORE_EnterCritical();
 	  	  if(flag==1)
 	  	  {	  flag=0;
-	  		  measure_temp();	//Change the name for submission
+	  		  measure_Prox();	//Change the name for submission
 	  		  logFlush();
 	  	  }
 	  	//  CORE_ExitCritical(IRQ_State);

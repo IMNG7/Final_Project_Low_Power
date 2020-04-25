@@ -241,7 +241,7 @@ static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
   /* Start advertising in user mode and enable connections */
   gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
 
-  displayPrintf(DISPLAY_ROW_TEMPVALUE,"BEACON MODE ");
+
 }
 void Beacon_Stop()
 {
@@ -449,6 +449,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
     		Gpio_flag =0;
 			Proximity_Stop();
 			bcnSetupAdvBeaconing();
+			displayPrintf(DISPLAY_ROW_TEMPVALUE,"BEACON MODE ");
     		Gpio_flag =0;
 			LOG_DEBUG("SEND ON OFF REQUEST");
 			LOG_INFO("\n\rPB0 Pressed");
@@ -462,7 +463,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		    trid++;
 		    if (resp)
 		    {
-		    	 LOG_INFO("gecko_cmd_mesh_generic_client_publish failed,code %x\r\n", resp);
+		    	// LOG_INFO("gecko_cmd_mesh_generic_client_publish failed,code %x\r\n", resp);
 		    }
 		    else
 		    {

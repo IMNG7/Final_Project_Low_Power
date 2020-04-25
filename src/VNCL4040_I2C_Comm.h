@@ -26,7 +26,7 @@ void i2c_initialize();
 void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data);
 void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data);
 //@Brief: Measuring the temperature from the inbuilt temperature sensor
-void measure_temp();
+void measure_Prox();
 //@Brief: Converting the Raw Data to celcius
 float convert_to_celcius(uint16_t temp);
 
