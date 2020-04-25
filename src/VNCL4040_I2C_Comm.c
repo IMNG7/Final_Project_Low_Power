@@ -20,7 +20,7 @@ I2CSPM_Init_TypeDef i2c_init_def=
 };
 I2C_TransferSeq_TypeDef i2c_transfer_message;
 I2C_TransferReturn_TypeDef return_state;
-uint8_t No_Hold_Cmd=0xF3;
+volatile extern uint8_t Proximity_flag;
 /*
  * @Name: i2c_initialize()
  * @Brief: Initializing I2C according to the I2C Configuring
@@ -34,59 +34,31 @@ void i2c_initialize()
 	I2CSPM_Init(&i2c_init_def);
 	us_wait(80000);
 	t1[0]=0x04;
-	tmp[0]=0x1D;
+	tmp[0]=0x10;
 	tmp[1]=0x47;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
 	t1[0]=0x03;
-	tmp[0]=0xCE;
-	tmp[1]=0x0B;
-//	i2c_transfer_cmd_reg_write(t1,tmp);
-//	us_wait(10000);
+	tmp[0]=0x00;
+	tmp[1]=0x09;
+	i2c_transfer_cmd_reg_write(t1,tmp);
+	us_wait(10000);
 //	tmp[0]=0x00;
 //	tmp[1]=0x00;
 //	tmp[2]=0x00;
-	i2c_transfer_cmd_reg_write(t1,tmp);
-	us_wait(10000);
+//	i2c_transfer_cmd_reg_write(t1,tmp);
+//	us_wait(10000);
 	t1[0]=0x07;
-	tmp[0]=0x20;
-	tmp[1]=0x4E;
-	i2c_transfer_cmd_reg_write(t1,tmp);
-	us_wait(10000);
-	t1[0]=0x06;
-	tmp[0]=0x96;
+	tmp[0]=0x00;
 	tmp[1]=0x00;
 	i2c_transfer_cmd_reg_write(t1,tmp);
 	us_wait(10000);
-
-//	t1[0]=0x07;
-//	tmp[0]=0x00;
-//	tmp[1]=0x00;
-//	i2c_transfer_cmd_reg_write(t1,tmp);
-//	us_wait(10000);
+	t1[0]=0x06;
+	tmp[0]=0x00;
+	tmp[1]=0x00;
+	i2c_transfer_cmd_reg_write(t1,tmp);
+	us_wait(10000);
 }
-/*
- * @Name: i2c_transfer_write()
- * @Brief: Writing to the registers from the I2C
- * @Arguments: The value to be given
- * @returns: None
- */
-void i2c_transfer_write(uint8_t* message)
-{	i2c_transfer_message.addr=VNCL4040_I2C_BUS_ADDRESS<<1;
-	i2c_transfer_message.flags=I2C_FLAG_WRITE;
-	i2c_transfer_message.buf[0].data=message;
-	i2c_transfer_message.buf[0].len=Single_Byte;
-	return_state=I2CSPM_Transfer(I2C0,&i2c_transfer_message);
-	if(return_state!=0)
-	{
-		LOG_ERROR("\n\rTransfer Failed\n\r");
-	}
-	else
-	{
-		LOG_INFO("\n\rWrite Successful\n\r");
-	}
-}
-
 void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data)
 {	i2c_transfer_message.addr=VNCL4040_I2C_BUS_ADDRESS<<1;
 	i2c_transfer_message.flags=I2C_FLAG_WRITE_WRITE;
@@ -97,11 +69,11 @@ void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data)
 	return_state=I2CSPM_Transfer(I2C0,&i2c_transfer_message);
 	if(return_state!=0)
 	{
-		LOG_ERROR("\n\rTransfer Failed\n\r");
+		//LOG_ERROR("\n\rTransfer Failed\n\r");
 	}
 	else
 	{
-		LOG_INFO("\n\rWrite Successful\n\r");
+		//LOG_INFO("\n\rWrite Successful\n\r");
 	}
 }
 void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data)
@@ -118,28 +90,7 @@ void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data)
 	}
 	else
 	{
-		LOG_INFO("\n\rRead Successful\n\r");
-	}
-}
-/*
- * @Name: i2c_transfer_read()
- * @Brief: Reading from the registers from the I2C
- * @Arguments: The buffer to be written to
- * @returns: None
- */
-void i2c_transfer_read(uint8_t* tmp)
-{	i2c_transfer_message.addr=VNCL4040_I2C_BUS_ADDRESS<<1;
-	i2c_transfer_message.flags=I2C_FLAG_READ;
-	i2c_transfer_message.buf[0].data=tmp;
-	i2c_transfer_message.buf[0].len=Double_Byte;
-	return_state=I2CSPM_Transfer(I2C0,&i2c_transfer_message);
-	if(return_state!=0)
-	{
-			LOG_ERROR("\n\rTransfer Failed\n\r");
-	}
-	else
-	{
-			LOG_INFO("\n\rRead Successful\n\r");
+		//LOG_INFO("\n\rRead Successful\n\r");
 	}
 }
 /*
@@ -158,29 +109,19 @@ void measure_temp()
 	i2c_initialize();
 	us_wait(10000);
 	t1[0]=0x08;
-	//i2c_transfer_write(t1);
-	//us_wait(10000);
-//	tmp[0]=0x00;
-//	tmp[1]=0x00;
 	i2c_transfer_cmd_reg_read(t1,tmp);
 	us_wait(10000);
-	temp=(tmp[0]<<8)+tmp[1];			// there are 2 buffers for Higher and Lower byte.
+	temp=(tmp[1]<<8)+tmp[0];			// there are 2 buffers for Higher and Lower byte.
 	LOG_INFO("\n\r Value:%d",temp);
-	//temperature=convert_to_celcius(temp);
-	//return (float)temp;
+	if(temp>1000)
+	{
+		gecko_external_signal(gecko_evt_system_external_signal_id);
+		Proximity_flag =1;
+	}
+//	t1[0]=0x07;
+//	i2c_transfer_cmd_reg_read(t1,tmp);
+//	us_wait(10000);
+//	temp=(tmp[1]<<8)+tmp[0];			// there are 2 buffers for Higher and Lower byte.
+//	LOG_INFO("\n\r Value:%d",temp);
 }
-/*
- * @Name: convert_to_celcius
- * @Brief: Converting the Raw Data to celcius
- * @Arguments: The raw value of temperature
- * @returns: The value of temperature in celcius
- */
-float convert_to_celcius(uint16_t temp)
-{
-	float Converted;
-	Converted= (175.72*(float)temp/65536)-46.85; 	// Refer the Datasheet
-	return Converted;
-}
-
-
 

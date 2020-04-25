@@ -169,12 +169,12 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
+    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,true,true,true);
     GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
     //GPIO_IntEnable(1<<Interrupt_pin);
-    GPIO_IntDisable(1<<Interrupt_pin);
+    GPIO_IntEnable(1<<Interrupt_pin);
     NVIC_EnableIRQ(LETIMER0_IRQn);
   // Initialize the bgapi classes
   if( DeviceUsesClientModel() ){
@@ -188,13 +188,13 @@ int main(void)
   gecko_initCoexHAL();
 
   while (1) {
-	  IRQ_State=CORE_EnterCritical();
+	  //IRQ_State=CORE_EnterCritical();
 	  	  if(flag==1)
 	  	  {	  flag=0;
 	  		  measure_temp();	//Change the name for submission
 	  		  logFlush();
 	  	  }
-	  	  CORE_ExitCritical(IRQ_State);
+	  	//  CORE_ExitCritical(IRQ_State);
 	  	  if(sleep_mode_Running!=sleepEM0)
 	  	  {
 				struct gecko_cmd_packet *evt = gecko_wait_event();

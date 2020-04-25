@@ -82,23 +82,14 @@ static void client_server_request(uint16_t model_id,
 	if(!(req->on_off))
 	{
 		displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON PRESSED");
-		gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
-		gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
-		if(Proximity_flag == 0)
-		{
-			LETIMER_Enable(LETIMER0,true);
-			NVIC_EnableIRQ(LETIMER0_IRQn);
-		}
-
+		Beacon_Stop();
+		Proximity_Setup();
 	}
 	//if the value by the switch on publisher not pressed gives 1
 	else
 	{
 		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON RELEASED");
-		  LETIMER_Enable(LETIMER0,false);
-		  NVIC_DisableIRQ(LETIMER0_IRQn);
-		  //GPIO_IntEnable(0<<Interrupt_pin);
-		  GPIO_IntDisable(1<<Interrupt_pin);
+		  Proximity_Stop();
 		  bcnSetupAdvBeaconing();
 	}
 }
@@ -394,7 +385,7 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
     case gecko_evt_mesh_node_provisioning_started_id:
     	displayPrintf(DISPLAY_ROW_ACTION,"Provisioning");
-    	gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
+    	//gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
         break;
 
     case gecko_evt_mesh_generic_server_client_request_id:
@@ -481,12 +472,10 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
     	if(Gpio_flag == 2)
 		{
 			Gpio_flag =0;
+			Proximity_flag=0;
 			LOG_INFO("\n\rPB1 Pressed");
 			Beacon_Stop();
-			if(Proximity_flag == 0)
-			{
-				Proximity_Setup();
-			}
+			Proximity_Setup();
 		}
     	if(Proximity_flag == 1)
 		{

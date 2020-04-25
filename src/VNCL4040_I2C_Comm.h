@@ -22,11 +22,9 @@
 
 //@Brief: Initializing I2C according to the I2C Configuring
 void i2c_initialize();
-//@Brief: Writing to the registers from the I2C
-void i2c_transfer_write(uint8_t* message);
-//@Brief: Reading from the registers from the I2C
-void i2c_transfer_read(uint8_t* tmp);
+
 void i2c_transfer_cmd_reg_write(uint8_t* cmd_reg,uint8_t* data);
+void i2c_transfer_cmd_reg_read(uint8_t* cmd_reg,uint8_t* data);
 //@Brief: Measuring the temperature from the inbuilt temperature sensor
 void measure_temp();
 //@Brief: Converting the Raw Data to celcius
