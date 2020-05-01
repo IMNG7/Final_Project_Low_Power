@@ -10,6 +10,8 @@ Security Mode: This mode will be started when the authentication will be complet
 
 Link for the Individual Report: https://drive.google.com/drive/u/1/folders/1W3Kh64A_Q4Nl3I2ewa-m0OtcLxVkeYUI
 
+Link for the group Report: https://drive.google.com/drive/u/1/folders/1Jay_--FVYlCXvkI1hUaL0hApOvFBmXNH
+
 # Project Status
 
 ## Completed
@@ -18,13 +20,11 @@ Link for the Individual Report: https://drive.google.com/drive/u/1/folders/1W3Kh
 
 2. Proximity Sensor Interfaced with Blue Gecko.
 
-## Remaining
+3. Integrate the proximity and beacon system.
 
-1. Integrate the proximity and beacon system.
+4. Test subsystem 2.
 
-2. Test subsystem 2.
-
-3. Integrate with subsystem 1. 
+5. Integrate with subsystem 1. 
 
 # How to use Indoor Navigation
 1. Use https://www.colorado.edu/map/?id=336#!m/193854 for CU Boulder Map 
