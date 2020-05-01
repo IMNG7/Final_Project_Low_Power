@@ -16,7 +16,6 @@
 #include "em_cmu.h"
 #include "math.h"
 #include "sleep.h"
-//#include "I2C_Comm.h"
 #include "VNCL4040_I2C_Comm.h"
  /*
    * ENTER YOUR TIME VARIABLES HERE, For the time between each I2C Read

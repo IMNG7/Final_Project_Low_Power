@@ -117,6 +117,7 @@ void measure_Prox()
 	{
 		gecko_external_signal(gecko_evt_system_external_signal_id);
 		Proximity_flag =1;
+
 	}
 //	t1[0]=0x07;
 //	i2c_transfer_cmd_reg_read(t1,tmp);

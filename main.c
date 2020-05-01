@@ -169,12 +169,12 @@ int main(void)
     GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
     GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
-    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
-    GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
+//    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
+//    GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
     GPIO_IntEnable(1<<Push_Button_Pin1);
     //GPIO_IntEnable(1<<Interrupt_pin);
-    GPIO_IntEnable(1<<Interrupt_pin);
+//    GPIO_IntEnable(1<<Interrupt_pin);
     NVIC_EnableIRQ(LETIMER0_IRQn);
   // Initialize the bgapi classes
   if( DeviceUsesClientModel() ){
@@ -188,13 +188,13 @@ int main(void)
   gecko_initCoexHAL();
 
   while (1) {
-	  //IRQ_State=CORE_EnterCritical();
+	  IRQ_State=CORE_EnterCritical();
 	  	  if(flag==1)
 	  	  {	  flag=0;
-	  		  measure_Prox();	//Change the name for submission
+	  		  measure_Prox();
 	  		  logFlush();
 	  	  }
-	  	//  CORE_ExitCritical(IRQ_State);
+	  	CORE_ExitCritical(IRQ_State);
 	  	  if(sleep_mode_Running!=sleepEM0)
 	  	  {
 				struct gecko_cmd_packet *evt = gecko_wait_event();
@@ -214,10 +214,14 @@ void PB0Handler()
 void PB1Handler()
 {
 	gecko_external_signal(gecko_evt_system_external_signal_id);
-	Gpio_flag=2;
+
 	if(Proximity_flag == 2)
 	{
 		Proximity_flag =3;
+	}
+	else
+	{
+		Gpio_flag=2;
 	}
 	GPIO_IntClear(0x40);
 }

@@ -29,6 +29,7 @@
 
 /* GPIO peripheral library */
 #include <em_gpio.h>
+#include <em_core.h>
 #include <em_letimer.h>
 //#include "src/Timer_Module.h"
 /* Own header */
@@ -81,14 +82,16 @@ static void client_server_request(uint16_t model_id,
 	//if the value by the switch on publisher pressed gives 0
 	if(!(req->on_off))
 	{
-		displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON PRESSED");
+		displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","SECURITY MODE");
+		LOG_INFO("\n\r Inside Scurity mode");
 		Beacon_Stop();
 		Proximity_Setup();
 	}
 	//if the value by the switch on publisher not pressed gives 1
 	else
 	{
-		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BUTTON RELEASED");
+		  displayPrintf(DISPLAY_ROW_TEMPVALUE,"%s","BEACON MODE");
+		  LOG_INFO("\n\r Inside Beacon mode");
 		  Proximity_Stop();
 		  bcnSetupAdvBeaconing();
 	}
@@ -212,6 +215,8 @@ void bcnSetupAdvBeaconing(void)
   /* This function sets up a custom advertisement package according to iBeacon specifications.
    * The advertisement package is 30 bytes long. See the iBeacon specification for further details.
    */
+	CORE_irqState_t IRQ_State;
+	IRQ_State=CORE_EnterCritical();
 #define EDDYSTONE_DATA_LEN           (24)
 
 static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
@@ -240,26 +245,25 @@ static const uint8_t eddystone_data[EDDYSTONE_DATA_LEN] = {
 
   /* Start advertising in user mode and enable connections */
   gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
-
-
+  CORE_ExitCritical(IRQ_State);
 }
 void Beacon_Stop()
 {
 	gecko_cmd_le_gap_bt5_set_adv_data(0, 0, 0, NULL);
-	gecko_cmd_le_gap_start_advertising(0, le_gap_user_data, le_gap_non_connectable);
+	gecko_cmd_le_gap_start_advertising(0, 0, 0);
 }
 void Proximity_Setup()
 {
 	LETIMER_Enable(LETIMER0,true);
 	NVIC_EnableIRQ(LETIMER0_IRQn);
-	GPIO_IntEnable(1<<Interrupt_pin);
+	//GPIO_IntEnable(1<<Interrupt_pin);
 	displayPrintf(DISPLAY_ROW_TEMPVALUE,"SECURITY MODE ");
 }
 void Proximity_Stop()
 {
 	LETIMER_Enable(LETIMER0,false);
 	NVIC_DisableIRQ(LETIMER0_IRQn);
-	GPIO_IntDisable(1<<Interrupt_pin);
+	//GPIO_IntDisable(1<<Interrupt_pin);
 	bcnSetupAdvBeaconing();
 }
 void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
@@ -453,28 +457,28 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
     		Gpio_flag =0;
 			LOG_DEBUG("SEND ON OFF REQUEST");
 			LOG_INFO("\n\rPB0 Pressed");
-			uint16 resp;
-			uint16 delay=0;
-			struct mesh_generic_request req;
-			const uint32 transtime = 0;
-			req.kind = mesh_generic_request_on_off;
-			req.on_off = GPIO_PinInGet(Push_Button_Port0, Push_Button_Pin0) ? MESH_GENERIC_ON_OFF_STATE_ON : MESH_GENERIC_ON_OFF_STATE_OFF;
-			resp = mesh_lib_generic_client_publish(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,_elem_index,trid,&req,transtime,delay,0);
-		    trid++;
-		    if (resp)
-		    {
-		    	// LOG_INFO("gecko_cmd_mesh_generic_client_publish failed,code %x\r\n", resp);
-		    }
-		    else
-		    {
-		    	 LOG_INFO("request sent, trid = %u, delay = %d\r\n", trid, delay);
-		    }
+//			uint16 resp;
+//			uint16 delay=0;
+//			struct mesh_generic_request req;
+//			const uint32 transtime = 0;
+//			req.kind = mesh_generic_request_on_off;
+//			req.on_off = GPIO_PinInGet(Push_Button_Port0, Push_Button_Pin0) ? MESH_GENERIC_ON_OFF_STATE_ON : MESH_GENERIC_ON_OFF_STATE_OFF;
+//			resp = mesh_lib_generic_client_publish(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,_elem_index,trid,&req,transtime,delay,0);
+//		    trid++;
+//		    if (resp)
+//		    {
+//		    	// LOG_INFO("gecko_cmd_mesh_generic_client_publish failed,code %x\r\n", resp);
+//		    }
+//		    else
+//		    {
+//		    	 LOG_INFO("request sent, trid = %u, delay = %d\r\n", trid, delay);
+//		    }
     	}
     	if(Gpio_flag == 2)
 		{
 			Gpio_flag =0;
 			Proximity_flag=0;
-			LOG_INFO("\n\rPB1 Pressed");
+			//LOG_INFO("\n\rPB1 Pressed");
 			Beacon_Stop();
 			Proximity_Setup();
 			gpioLed0SetOff();
@@ -486,11 +490,12 @@ void handle_ecen5823_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			displayPrintf(DISPLAY_ROW_TEMPVALUE,"ALARM DETECTED");
 			Proximity_Stop();
 			gpioLed0SetOn();
+			//while(1);
 		}
     	if(Proximity_flag == 3)
 		{
 			Proximity_flag =0;
-			LOG_INFO("\n\rPB1 Pressed");
+			LOG_INFO("\n\rPB1 Pressed, Alarm Cleared");
 			Proximity_Setup();
 			gpioLed0SetOff();
 		}

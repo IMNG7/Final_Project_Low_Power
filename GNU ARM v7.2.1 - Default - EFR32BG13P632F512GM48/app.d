@@ -71,6 +71,8 @@ app.o: ../app.c \
  D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_mesh\inc\common/bg_gattdb_def.h \
  D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_mesh\inc/mesh_generic_model_capi_types.h \
  D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_mesh\inc/mesh_lib.h \
+ D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_core.h \
+ D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_common.h \
  D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_letimer.h \
  ../app.h ../src/display.h \
  D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\middleware\glib\glib/glib.h \
@@ -222,6 +224,10 @@ D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_me
 D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_mesh\inc/mesh_generic_model_capi_types.h:
 
 D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\protocol\bluetooth\bt_mesh\inc/mesh_lib.h:
+
+D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_core.h:
+
+D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_common.h:
 
 D:\COLLEGE\ MATERIAL\IOT\final-project-assignment-IMNG7\platform\emlib\inc/em_letimer.h:
 
