@@ -50,7 +50,7 @@
 #include "src/ble_mesh_device_type.h"
 //#include "src/I2C_Comm.h"
 #include "src/Load_PM.h"
-#include "src/VNCL4040_I2C_Comm.h"
+#include <src/SI1145_I2C_Comm.h>
 //#include "src/I2C_Comm_Interrupt.h"
 //#include "src/State_Machine.h"
 #include "src/Timer_Module.h"
@@ -166,9 +166,9 @@ int main(void)
     displayInit();
     GPIOINT_Init();
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin0,6,true,false,true);
-    GPIOINT_CallbackRegister(Push_Button_Pin0,PB0Handler);
+//    GPIOINT_CallbackRegister(Push_Button_Pin0, PB0Handler);
     GPIO_ExtIntConfig(Push_Button_Port0,Push_Button_Pin1,7,true,false,true);
-    GPIOINT_CallbackRegister(Push_Button_Pin1,PB1Handler);
+//    GPIOINT_CallbackRegister(Push_Button_Pin1, PB1Handler);
 //    GPIO_ExtIntConfig(Interrupt_port,Interrupt_pin,Interrupt_pin,false,true,true);
 //    GPIOINT_CallbackRegister(Interrupt_pin,Proximity_Handler);
     GPIO_IntEnable(1<<Push_Button_Pin0);
@@ -191,7 +191,7 @@ int main(void)
 	  IRQ_State=CORE_EnterCritical();
 	  	  if(flag==1)
 	  	  {	  flag=0;
-	  		  measure_Prox();
+	  	  	  SI1145_measure_Prox();
 	  		  logFlush();
 	  	  }
 	  	CORE_ExitCritical(IRQ_State);
